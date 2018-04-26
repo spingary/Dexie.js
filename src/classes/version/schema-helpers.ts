@@ -287,6 +287,15 @@ export function adjustToExistingIndexNames(db: Dexie, schema: DbSchema, idbtrans
   {
       db._hasGetAll = false;
   }    
+  // Regular mobile Safari looked for
+  //  "Mozilla/5.0 (iPad; CPU OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E8301 Safari/602.1"
+  // We need to also be looking for 
+  //  "Mozilla/5.0 (iPad; CPU OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Mobile/14E8301"
+  if (/(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent) &&
+        [].concat(navigator.userAgent.match(/Mobile\/(\d*)/))[1] < 15
+  ) {
+      db._hasGetAll = false;
+  };
 }
 
 export function parseIndexSyntax(indexes: string): IndexSpec[] {
